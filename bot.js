@@ -43,12 +43,26 @@ const sendMainMenu = async (ctx) => {
 ✅ **Auto-Liquidity** Locked
     `;
     const menuButtons = Markup.inlineKeyboard([
-        [Markup.button.callback('ℹ️ About Us', 'ABOUT'), Markup.button.callback('💰 How to Buy', 'BUY')],
-        [Markup.button.callback('📝 Register', 'REGISTER'), Markup.button.callback('📞 Support', 'SUPPORT')],
-        [Markup.button.callback('📄 Whitepaper', 'PAPER'), Markup.button.callback('🛡 Audit Report', 'AUDIT')],
-        [Markup.button.callback('🗺 Roadmap', 'MAP'), Markup.button.callback('❓ FAQs', 'FAQ')],
-        [Markup.button.url('🌐 Visit Website', CONFIG.website)]
-    ]);
+    [
+        Markup.button.callback('ℹ️ About Us', 'ABOUT'), 
+        Markup.button.callback('💰 How to Buy', 'BUY')
+    ],
+    [
+        Markup.button.callback('📝 Register', 'SHOW_REGISTER'), 
+        Markup.button.callback('📞 Support', 'SUPPORT')
+    ],
+    [
+        Markup.button.callback('📄 Whitepaper', 'PAPER'), 
+        Markup.button.callback('🛡 Audit Report', 'AUDIT')
+    ],
+    [
+        Markup.button.callback('🗺 Roadmap', 'MAP'), 
+        Markup.button.callback('❓ FAQs', 'FAQ')
+    ],
+    [
+        Markup.button.url('🌐 Visit Website', CONFIG.website)
+    ]
+]);
 
     try {
         if (ctx.callbackQuery) {
@@ -131,7 +145,7 @@ bot.action('BUY', (ctx) => showBuy(ctx));
 const showRegister = async (ctx) => {
 
     const userId = ctx.from.id;
-    const referralLink = `${CONFIG.register}?ref=${userId}`;
+    const referralLink = `${CONFIG.register}&ref=${userId}`;
 
     const text = `
 📝 *REGISTRATION GUIDE*
@@ -143,36 +157,38 @@ const showRegister = async (ctx) => {
 4️⃣ Open DApp Browser  
 5️⃣ Paste link below & Connect Wallet  
 
-🔗 *Your Referral Link:*  
-${referralLink}
+🔗 *Your Referral Link (Tap & Hold to Copy):*
 
-👇 Copy your referral link below
-`;
+\`\`\`
+${referralLink}
+\`\`\`
+
+ `;
 
     const regButtons = Markup.inlineKeyboard([
-        [
-            {
-                text: "📋 Copy Referral Link",
-                switch_inline_query: referralLink
-            }
-        ],
-        [
-            Markup.button.url('🔗 Open Registration Page', referralLink)
-        ],
+        
         [
             Markup.button.callback('🔙 Back', 'SHOW_MENU')
         ]
     ]);
 
     if (ctx.callbackQuery) {
-        await ctx.editMessageText(text, { parse_mode: 'Markdown', reply_markup: regButtons.reply_markup }).catch(() => {});
+        await ctx.editMessageText(text, { 
+            parse_mode: 'Markdown', 
+            reply_markup: regButtons.reply_markup 
+        }).catch(() => {});
     } else {
-        await ctx.reply(text, { parse_mode: 'Markdown', reply_markup: regButtons.reply_markup });
+        await ctx.reply(text, { 
+            parse_mode: 'Markdown', 
+            reply_markup: regButtons.reply_markup 
+        });
     }
 };
 
-bot.action('REGISTER', (ctx) => showRegister(ctx));
-
+bot.action('SHOW_REGISTER', async (ctx) => {
+    await ctx.answerCbQuery();
+    await showRegister(ctx);
+});
 // 📞 SUPPORT
 bot.action('SUPPORT', (ctx) => {
     const text = `📞 **SUPPORT**\n\nChannel: ${CONFIG.channel}\nAdmin: ${CONFIG.support}\n\n⚠️ Admin will never DM first.`;
@@ -273,14 +289,22 @@ Sell → Burn + 15% Liquidity
 
 
   const pinButtons = Markup.inlineKeyboard([
-    [Markup.button.callback('📝 Register', 'REGISTER')],
-    [Markup.button.callback('📘 Open Menu', 'SHOW_MENU')],
-    [Markup.button.url('🌐 Website', CONFIG.website)],
-    [Markup.button.url('📄 Whitepaper', CONFIG.whitepaper), 
-     Markup.button.url('🛡 Audit Report', CONFIG.audit)],
-    [Markup.button.url('🗺 Roadmap', CONFIG.roadmapPdf), 
-     Markup.button.url('🌐 Website', CONFIG.website)],
-    [Markup.button.url('🤖 Start Bot Menu', `https://t.me/${ctx.botInfo.username}?start=menu`)]
+[
+    Markup.button.url(
+        '📝 Register Now', 
+        `https://t.me/${ctx.botInfo.username}?start=register`
+    )
+],    [Markup.button.url('🌐 Website', CONFIG.website)],
+    [
+        Markup.button.url('📄 Whitepaper', CONFIG.whitepaper), 
+        Markup.button.url('🛡 Audit Report', CONFIG.audit)
+    ],
+    [
+        Markup.button.url('🗺 Roadmap', CONFIG.roadmapPdf)
+    ],
+    [
+        Markup.button.url('🤖 Start Bot Menu', `https://t.me/${ctx.botInfo.username}?start=menu`)
+    ]
 ]);
 
 
@@ -323,7 +347,10 @@ const startAutoPosting = () => {
             },
             {
                 text: `🚀 **JOIN THE REVOLUTION**\n\nMinimum Investment: **$1** only on Polygon Network!\n\n👇 **Join Now:**`,
-                buttons: Markup.inlineKeyboard([[Markup.button.url('🔗 Register', CONFIG.register)]])
+                buttons: Markup.inlineKeyboard([[Markup.button.url(
+   '🔗 Register',
+   `https://t.me/${BOT_USERNAME}?start=register`
+)]])
             }
         ];
         
