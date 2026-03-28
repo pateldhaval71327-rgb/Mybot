@@ -117,7 +117,6 @@ Invest in just a few simple steps:
 
 1️⃣ **After Registration**
 
-
 2️⃣ **Click Buy**
 Tap the **[BUY]** button on the dashboard.
 
